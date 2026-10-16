@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Clases de baile</title>
+<title>Clases de baile · SyC Dance Academy</title>
 <style>
   :root {
     --fondo: #faf7f5;
     --superficie: #ffffff;
     --texto: #2b2330;
     --suave: #7a7185;
-    --acento: #c2185b;
+    --acento: #a100b8;
+    --acento2: #00aabb;
     --borde: #e7e0e5;
   }
   * { box-sizing: border-box; }
@@ -24,10 +25,17 @@
   }
 
   header {
-    padding: 1.5rem 1rem 1rem;
+    padding: 1.25rem 1rem 1rem;
     text-align: center;
   }
-  header h1 { margin: 0; font-size: 1.6rem; letter-spacing: -0.02em; }
+  header img.logo {
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    margin: 0 auto .75rem;
+  }
+  header h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; }
   header p { margin: .3rem 0 0; color: var(--suave); font-size: .95rem; }
 
   /* Barra de filtros fija arriba al hacer scroll */
@@ -47,7 +55,7 @@
     width: 100%;
     font: inherit;
     font-size: 16px; /* evita el zoom automático en iPhone */
-    padding: .7rem .6rem;
+    padding: .7rem 1.8rem .7rem .6rem;
     border: 1px solid var(--borde);
     border-radius: 10px;
     background: var(--superficie);
@@ -59,7 +67,6 @@
     background-position: calc(100% - 16px) 55%, calc(100% - 11px) 55%;
     background-size: 5px 5px, 5px 5px;
     background-repeat: no-repeat;
-    padding-right: 1.8rem;
   }
   .filtros select:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
 
@@ -78,7 +85,7 @@
   .rejilla { display: grid; grid-template-columns: 1fr; gap: .9rem; }
   @media (min-width: 640px) {
     .rejilla { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
-    header h1 { font-size: 2rem; }
+    header h1 { font-size: 1.8rem; }
   }
 
   .tarjeta {
@@ -116,11 +123,14 @@
   .notas { margin: .3rem 0 0; color: var(--suave); font-size: .9rem; }
 
   .vacio { text-align: center; color: var(--suave); padding: 3rem 1rem; }
+
+  footer { text-align: center; color: var(--suave); font-size: .8rem; padding: 0 1rem 2rem; }
 </style>
 </head>
 <body>
 
 <header>
+  <img class="logo" src="log.jpeg" alt="SyC Dance Academy">
   <h1>Clases de baile</h1>
   <p>Figuras de salsa y bachata por nivel</p>
 </header>
@@ -138,12 +148,14 @@
 
 <main id="contenido"></main>
 
+<footer>SyC Dance Academy</footer>
+
 <script>
 /* ==========================================================
    📝 EDITA AQUÍ TUS FIGURAS
    - estilo: "Salsa" o "Bachata"
    - clase:  debe coincidir con un nivel de NIVELES de abajo
-   - video:  ruta relativa (ej. "bachata2/bachata2_clase1.mp4"),
+   - video:  ruta relativa (ej. "bachata3/bachata3_clase1.mp4"),
              o enlace de YouTube/Drive. Vacío = "Video pendiente".
    - notas:  opcional
    ========================================================== */
