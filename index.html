@@ -225,6 +225,11 @@ $("filtro-estilo").innerHTML =
   `<option value="">Todos los estilos</option>` +
   ESTILOS.map(e => `<option value="${esc(e)}">${esc(e)}</option>`).join("");
 
+/* Solo un video suena a la vez: al dar play a uno, se pausan los demás */
+document.addEventListener("play", (e) => {
+  document.querySelectorAll("video").forEach(v => { if (v !== e.target) v.pause(); });
+}, true);
+
 $("filtro-estilo").addEventListener("change", () => { actualizarNiveles(); render(); });
 $("filtro-clase").addEventListener("change", render);
 
