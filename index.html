@@ -215,6 +215,12 @@ function render() {
   const estilo = $("filtro-estilo").value;
   const clase = $("filtro-clase").value;
 
+  /* Mientras no se elija un nivel, no se muestran (ni cargan) videos */
+  if (!clase) {
+    $("contenido").innerHTML = `<p class="vacio">Elige un nivel para ver las clases.</p>`;
+    return;
+  }
+
   const niveles = NIVELES
     .filter(n => !estilo || n.estilo === estilo)
     .filter(n => !clase || n.nombre === clase);
