@@ -174,8 +174,9 @@ function medio(video) {
   const id = youtubeId(video);
   if (id) {
     /* loading="lazy": el video solo se carga cuando se acerca a la pantalla */
-    return `<div class="medio"><iframe src="https://www.youtube.com/embed/${esc(id)}?playsinline=1&rel=0"
-              loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen
+    return `<div class="medio"><iframe src="https://www.youtube.com/embed/${esc(id)}?playsinline=1&rel=0&enablejsapi=1"
+              loading="lazy" onload="ytEscuchar(this)"
+              allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen
               title="Video de clase"></iframe></div>`;
   }
   return `<div class="medio"><video controls preload="none" playsinline src="${esc(video)}"></video></div>`;
@@ -228,9 +229,36 @@ $("filtro-estilo").innerHTML =
   `<option value="">Todos los estilos</option>` +
   ESTILOS.map(e => `<option value="${esc(e)}">${esc(e)}</option>`).join("");
 
-/* Solo un archivo local suena a la vez (los de YouTube se controlan en su propio reproductor) */
+/* ---- Solo un video se reproduce a la vez ---- */
+
+/* Pide a un iframe de YouTube que nos envíe su estado (reproduciendo, pausado...) */
+function ytEscuchar(iframe) {
+  iframe.contentWindow.postMessage(JSON.stringify({ event: "listening" }), "*");
+}
+
+/* Pausa todos los demás videos (YouTube y archivos locales) */
+function pausarOtros(origen) {
+  document.querySelectorAll("iframe").forEach(f => {
+    if (f.contentWindow && f.contentWindow !== origen) {
+      f.contentWindow.postMessage(JSON.stringify({ event: "command", func: "pauseVideo", args: [] }), "*");
+    }
+  });
+  document.querySelectorAll("video").forEach(v => { if (v !== origen && !v.paused) v.pause(); });
+}
+
+/* YouTube avisa cuando un video cambia de estado: 1 = reproduciendo */
+window.addEventListener("message", (e) => {
+  if (!String(e.origin).includes("youtube.com")) return;
+  let d;
+  try { d = typeof e.data === "string" ? JSON.parse(e.data) : e.data; } catch { return; }
+  if (d && d.event === "infoDelivery" && d.info && d.info.playerState === 1) {
+    pausarOtros(e.source);
+  }
+});
+
+/* Archivos locales: al dar play a uno, se pausan los demás */
 document.addEventListener("play", (e) => {
-  document.querySelectorAll("video").forEach(v => { if (v !== e.target) v.pause(); });
+  pausarOtros(e.target);
 }, true);
 
 $("filtro-estilo").addEventListener("change", () => { actualizarNiveles(); render(); });
