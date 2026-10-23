@@ -108,11 +108,39 @@
   }
 
   @media (max-width: 639px) {
+    header {
+      padding: 1rem;
+      text-align: center;
+    }
+    header img.logo {
+      width: min(72vw, 240px);
+      max-width: 240px;
+      margin: 0 auto;
+    }
+    header h1, header p { display: none; }
+    .filtros {
+      margin: 0 .75rem;
+      padding: .65rem;
+      border: 1px solid var(--borde);
+      border-radius: 14px;
+      box-shadow: 0 5px 18px rgb(43 35 48 / 8%);
+    }
+    main { padding-top: 1.25rem; }
+    .seccion { margin-bottom: 1.5rem; }
+    .seccion h2 { font-size: 1.15rem; }
+    .rejilla { gap: 1rem; }
+    .tarjeta {
+      border-radius: 18px;
+      border-color: #e2d9e1;
+      box-shadow: 0 5px 18px rgb(43 35 48 / 7%);
+    }
     .medio, .pendiente {
       width: min(100%, 39.375vh);
       width: min(100%, 39.375svh);
       margin-inline: auto;
     }
+    .cuerpo { padding: .85rem 1rem 1rem; }
+    .cuerpo h3 { font-size: 1.1rem; }
   }
 
   @media (max-width: 360px) {
