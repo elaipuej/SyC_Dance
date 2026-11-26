@@ -38,7 +38,7 @@
     top: 0;
     z-index: 10;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: .6rem;
     padding: max(.65rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) .65rem max(1rem, env(safe-area-inset-left));
     background: rgb(250 247 245 / 94%);
@@ -186,16 +186,12 @@
 <header>
   <img class="logo" src="log.jpeg" alt="SyC Dance Academy">
   <h1>Clases de baile</h1>
-  <p>Figuras de salsa y bachata por nivel</p>
+  <p>Figuras de salsa y bachata por clases</p>
 </header>
 
 <div class="filtros">
   <div>
-    <label for="filtro-estilo">Estilo</label>
-    <select id="filtro-estilo"></select>
-  </div>
-  <div>
-    <label for="filtro-clase">Nivel</label>
+    <label for="filtro-clase">Clases</label>
     <select id="filtro-clase"></select>
   </div>
 </div>
@@ -208,7 +204,7 @@
 /* ==========================================================
    📝 EDITA AQUÍ TUS CLASES
    - estilo: "Salsa" o "Bachata"
-   - clase:  debe coincidir con un nivel de NIVELES de abajo
+   - clase:  debe coincidir con una clase de CLASES de abajo
    - video:  enlace de YouTube (normal, shorts o youtu.be),
              o ruta a un archivo en el repo (ej. "bachata3/bachata3_clase1.mp4").
              Vacío = "Video pendiente".
@@ -229,6 +225,11 @@ const FIGURAS = [
   { nombre: "Clase 3", estilo: "Bachata", clase: "Bachata 3", video: "https://youtube.com/shorts/Kqq7Jp2_Ssk", notas: "" },
   { nombre: "Clase 4", estilo: "Bachata", clase: "Bachata 3", video: "https://youtube.com/shorts/dUx2xIbXbrc", notas: "" },
   { nombre: "Clase 5", estilo: "Bachata", clase: "Bachata 3", video: "https://youtube.com/shorts/2Hesb4yBREE", notas: "" },
+  { nombre: "Clase 6", estilo: "Bachata", clase: "Bachata 3", video: "https://youtube.com/shorts/WY57uSD7Azc", notas: "" },
+  { nombre: "Clase 7", estilo: "Bachata", clase: "Bachata 3", video: "https://youtube.com/shorts/q45NinZdt-A", notas: "" },
+  { nombre: "Clase 8", estilo: "Bachata", clase: "Bachata 3", video: "https://youtube.com/shorts/Ns2qDRD8dxw", notas: "" },
+  { nombre: "Clase 9", estilo: "Bachata", clase: "Bachata 3", video: "https://youtube.com/shorts/4X2jWq0Zf6A", notas: "" },
+  { nombre: "Clase 10", estilo: "Bachata", clase: "Bachata 3", video: "https://youtube.com/shorts/7nY1v8p5G2E", notas: "" },
   // ---------- LINEA 1 ----------
   { nombre: "Clase 1", estilo: "Salsa", clase: "Línea 1", video: "https://youtube.com/shorts/3KILgpCBQXA", notas: "" },
   { nombre: "Clase 2", estilo: "Salsa", clase: "Línea 1", video: "https://youtube.com/shorts/IUZNePNfW6Q", notas: "" },
@@ -246,17 +247,15 @@ const FIGURAS = [
   { nombre: "Clase 5", estilo: "Salsa", clase: "Línea 2", video: "https://youtube.com/shorts/LfJyHDCfK0M", notas: "" }
 ];
 
-/* Niveles y a qué estilo pertenecen (define el segundo filtro) */
-const NIVELES = [
+/* Clases disponibles */
+const CLASES = [
   { nombre: "Línea 1",   estilo: "Salsa" },
   { nombre: "Línea 2",   estilo: "Salsa" },
-  { nombre: "Cubana 2",  estilo: "Salsa" },
   { nombre: "Bachata 2", estilo: "Bachata" },
   { nombre: "Bachata 3", estilo: "Bachata" }
 ];
 /* ========================================================== */
 
-const ESTILOS = [...new Set(NIVELES.map(n => n.estilo))];
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -267,15 +266,13 @@ function youtubeId(url) {
   return m ? m[1] : null;
 }
 
-/* Segundo filtro: solo muestra los niveles del estilo elegido */
-function actualizarNiveles() {
-  const estilo = $("filtro-estilo").value;
-  const niveles = NIVELES.filter(n => !estilo || n.estilo === estilo).map(n => n.nombre);
+function actualizarClases() {
+  const nombres = CLASES.map(n => n.nombre);
   const actual = $("filtro-clase").value;
   $("filtro-clase").innerHTML =
-    `<option value="">Elige un nivel</option>` +
-    niveles.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
-  if (niveles.includes(actual)) $("filtro-clase").value = actual;
+    `<option value="">Elige una clase</option>` +
+    nombres.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  if (nombres.includes(actual)) $("filtro-clase").value = actual;
 }
 
 function medio(video) {
@@ -316,39 +313,31 @@ function tarjeta(f) {
 }
 
 function render() {
-  const estilo = $("filtro-estilo").value;
   const clase = $("filtro-clase").value;
 
-  /* Sin nivel elegido no se muestra ningún video */
+  /* Sin clase elegida no se muestra ningún video */
   if (!clase) {
-    $("contenido").innerHTML = `<p class="vacio">Elige un nivel para ver las clases.</p>`;
+    $("contenido").innerHTML = `<p class="vacio">Elige una clase para ver las clases.</p>`;
     return;
   }
 
-  const niveles = NIVELES
-    .filter(n => !estilo || n.estilo === estilo)
-    .filter(n => n.nombre === clase);
+  const clases = CLASES.filter(n => n.nombre === clase);
 
-  const secciones = niveles
-    .map(n => ({ nivel: n.nombre, figuras: FIGURAS.filter(f => f.clase === n.nombre) }))
+  const secciones = clases
+    .map(n => ({ clase: n.nombre, figuras: FIGURAS.filter(f => f.clase === n.nombre) }))
     .filter(g => g.figuras.length);
 
   if (!secciones.length) {
-    $("contenido").innerHTML = `<p class="vacio">Todavía no hay clases para este nivel.</p>`;
+    $("contenido").innerHTML = `<p class="vacio">Todavía no hay clases para esta clase.</p>`;
     return;
   }
 
   $("contenido").innerHTML = secciones.map(g => `
     <section class="seccion">
-      <h2>${esc(g.nivel)} <span>${g.figuras.length} clase${g.figuras.length > 1 ? "s" : ""}</span></h2>
+      <h2>${esc(g.clase)} <span>${g.figuras.length} clase${g.figuras.length > 1 ? "s" : ""}</span></h2>
       <div class="rejilla">${g.figuras.map(tarjeta).join("")}</div>
     </section>`).join("");
 }
-
-/* Rellenar el primer filtro */
-$("filtro-estilo").innerHTML =
-  `<option value="">Todos los estilos</option>` +
-  ESTILOS.map(e => `<option value="${esc(e)}">${esc(e)}</option>`).join("");
 
 /* ---- Solo un video se reproduce a la vez ---- */
 
@@ -382,14 +371,13 @@ document.addEventListener("play", (e) => {
   pausarOtros(e.target);
 }, true);
 
-$("filtro-estilo").addEventListener("change", () => { actualizarNiveles(); render(); });
 $("filtro-clase").addEventListener("change", render);
 $("contenido").addEventListener("click", (e) => {
   const button = e.target.closest(".youtube-preview");
   if (button) reproducirYouTube(button);
 });
 
-actualizarNiveles();
+actualizarClases();
 render();
 </script>
 </body>
